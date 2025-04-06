@@ -1,0 +1,63 @@
+def pairwise_sort(arr, first, last):
+    # Step 1: Pairwise sort adjacent elements
+    for k in range(first, last, 2):
+        if k + 1 <= last and arr[k] > arr[k + 1]:
+            arr[k], arr[k + 1] = arr[k + 1], arr[k]
+
+    # Step 2: Extract even-indexed elements
+    A = [arr[k] for k in range(first + 1, last + 1, 2)]
+
+    # Step 3: Rewrite original list with odd-indexed first
+    x = first
+    for k in range(first, last + 1, 2):
+        arr[x] = arr[k]
+        x += 1
+
+    # Step 4: Append even-indexed elements
+    for a in A:
+        arr[x] = a
+        x += 1
+
+def merge(arr, first, mid, last):
+    # Standard merge logic
+    left = arr[first:mid + 1]
+    right = arr[mid + 1:last + 1]
+
+    i = j = 0
+    k = first
+
+    while i < len(left) and j < len(right):
+        arr[k] = left[i] if left[i] < right[j] else right[j]
+        if arr[k] == left[i]:
+            i += 1
+        else:
+            j += 1
+        k += 1
+
+    while i < len(left):
+        arr[k] = left[i]
+        i += 1
+        k += 1
+
+    while j < len(right):
+        arr[k] = right[j]
+        j += 1
+        k += 1
+
+def enhanced_merge_sort(arr, first, last):
+    n = last - first + 1
+    if n <= 1:
+        return
+
+    pairwise_sort(arr, first, last)
+
+    if first < last:
+        mid = (first + last) // 2
+        enhanced_merge_sort(arr, first, mid)
+        enhanced_merge_sort(arr, mid + 1, last)
+        merge(arr, first, mid, last)
+
+# Example usage
+arr = [9, 3, 7, 1, 5, 2]
+enhanced_merge_sort(arr, 0, len(arr) - 1)
+print("Sorted:", arr)
